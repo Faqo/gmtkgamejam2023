@@ -12,45 +12,66 @@ public class TimerController : MonoBehaviour
     private float remainingDuration;
     private GameObject parentObject;
     private float target = 1f;
+
+    private bool Pause;
+
+    public event System.Action isDestroy;
+    public void OnPointerClick()
+    {
+        Pause = !Pause;
+    }
     // Start is called before the first frame update
     private void Start()
     {
         parentObject = transform.parent.gameObject;
-        if(parentObject.name == "TimeTracker"){
+        if (parentObject.name == "TimeTracker")
+        {
             Duration = TimesManager.RoundTime;
         }
         else Duration = TimesManager.CallTime;
-        
+
         Begin(Duration);
     }
 
-    private void Begin(float seconds){
+    private void Begin(float seconds)
+    {
         remainingDuration = seconds;
         checkTimefillGradientAmount();
         StartCoroutine(UpdateTimer());
-                
+
     }
 
     private IEnumerator UpdateTimer()
     {
-        while(remainingDuration >= 0)
+        while (remainingDuration >= 0)
         {
-            uiFill.fillAmount = Mathf.InverseLerp(0, Duration, remainingDuration);
-            remainingDuration--;
-            target = remainingDuration/Duration;
-            checkTimefillGradientAmount();
-            yield return new WaitForSeconds(1f);
+            if (!Pause)
+            {
+                uiFill.fillAmount = Mathf.InverseLerp(0, Duration, remainingDuration);
+                remainingDuration--;
+                target = remainingDuration / Duration;
+                checkTimefillGradientAmount();
+                yield return new WaitForSeconds(1f);
+            }
         }
         OnEnd();
     }
 
-    private void checkTimefillGradientAmount(){
+    private void checkTimefillGradientAmount()
+    {
         uiFill.color = uiFillGradient.Evaluate(target);
     }
 
     private void OnEnd()
     {
-        Destroy(parentObject);
+        if (parentObject.name != "TimeTracker")
+        {
+            if (isDestroy != null)
+            {
+                isDestroy.Invoke();
+            }
+            Destroy(parentObject);
+        }
         //End Time , if want Do something
         print("End");
     }

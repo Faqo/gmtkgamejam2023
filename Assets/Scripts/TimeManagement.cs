@@ -9,7 +9,7 @@ public class TimeManagement : MonoBehaviour
     public float callTime;
 
     // Start is called before the first frame update
-    private void Start()
+    private void Awake()
     {
         // Access the global variables from TimesManager
         TimesManager.RoundTime = roundTime;

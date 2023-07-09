@@ -8,42 +8,33 @@ public class CallController : MonoBehaviour
     public float callCooldown;
 
     [SerializeField] GameObject callPromp;
-    // Start is called before the first frame update
 
-    private void Start()
-    {
-        // Start the coroutine to trigger the action randomly
-        StartCoroutine(TriggerRandomAction());
+    public event System.Action isCalled;
+
+    private void Start(){
+        StartCoroutine(SpawnJudgeCall());
     }
 
-    private IEnumerator TriggerRandomAction()
-    {
+    private IEnumerator SpawnJudgeCall(){
         while (true)
         {
-            // Generate a random time interval
-            float randomTime = Random.Range(1.0f, TimesManager.RoundTime/2);
+            float randomTime = Random.Range(2.0f, TimesManager.RoundTime/2);
             yield return new WaitForSeconds(randomTime);
 
-            // Check if the action is active
             if (!isCalling)
             {
-                // Perform the action
                 PerformAction();
                 yield return new WaitForSeconds(callCooldown);
             }
         }
     }
 
-    private void PerformAction()
-    {
-        // Replace this with the actual action you want to perform
-        Debug.Log("Action performed!");
+    private void PerformAction(){
         Instantiate(callPromp, transform);
+        if (isCalled != null)
+        {
+            isCalled.Invoke();
+        }
     }
 
-    // Method to activate or deactivate the action
-    public void SetActionActive(bool isActive)
-    {
-        isCalling = isActive;
-    }
 }
