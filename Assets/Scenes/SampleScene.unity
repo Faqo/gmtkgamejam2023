@@ -3767,7 +3767,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6208925ce58de284e92896a9c91ea50b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timers: {fileID: 1051330661}
   roundTime: 50
   callTime: 5
 --- !u!1 &1084145223
